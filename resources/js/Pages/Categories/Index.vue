@@ -7,6 +7,7 @@ export default {
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue'
 import { Link } from '@inertiajs/vue3'
+import { Inertia } from '@inertiajs/inertia'
 
 defineProps({
     categories: {
@@ -15,9 +16,9 @@ defineProps({
     }
 })
 
-const deleteCategory = id =>{
+const deleteCategory = id => {
     if (confirm('Are you sure you want to delete this category?')) {
-        Inertia.delete(route('category.destroy', id))
+        Inertia.delete(route('categories.destroy', id))
     }
 }
 
@@ -26,7 +27,7 @@ const deleteCategory = id =>{
 <template>
     <AppLayout>
         <template #header>
-            <h1 class="text-xl leading-tight text-gray-800 font-semibolt">Categories</h1>
+            <h1 class="text-xl font-semibold leading-tight text-gray-800">Categories</h1>
         </template>
 
         <div class="py-12">
@@ -34,6 +35,7 @@ const deleteCategory = id =>{
                 <div class="p-6 bg-white border-b border-gray-200 rounded-lg shadow-md">
                     <div class="flex justify-between">
                         <Link :href="route('categories.create')"
+                            v-if="$page.props.user.permissions.includes('create categories')"
                             class="text-white bg-indigo-700 hover:bg-indigo-800 font-medium rounded-lg text-sm px-5 py-2.5 me-2 dark:bg-indigo-600 dark:hover:bg-indigo-700 focus:outline-none">
                         Create category
                         </Link>
@@ -62,10 +64,16 @@ const deleteCategory = id =>{
                                     </th>
                                     <td class="flex justify-around px-6 py-4">
                                         <a href="#"
-                                            class="font-medium text-blue-600 dark:text-blue-500 hover:underline"><Link :href="route('categories.edit', category.id)">Edit</Link>
+                                            class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                            <Link :href="route('categories.edit', category.id)"
+                                                v-if="$page.props.user.permissions.includes('update categories')">Edit
+                                            </Link>
                                         </a>
                                         <a href="#"
-                                            class="font-medium text-blue-600 dark:text-blue-500 hover:underline"><Link @click="deleteCategory(category.id)">Delete</Link>
+                                            class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                            <Link href="" @click="deleteCategory(category.id)"
+                                                v-if="$page.props.user.permissions.includes('delete categories')">Delete
+                                            </Link>
                                         </a>
                                     </td>
 
